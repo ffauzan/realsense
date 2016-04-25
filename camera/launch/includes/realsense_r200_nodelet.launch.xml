@@ -47,7 +47,6 @@
 
 <!--        <param name="depth_frame_id"    type="str"  value="$(arg depth_frame_id)" />
         <param name="rgb_frame_id"      type="str"  value="$(arg rgb_frame_id)" /> -->
-        <param name="camera"            type="int"  value="$(arg camera)" />
         <param name="depth_height"      type="int"  value="$(arg depth_height)" />
         <param name="depth_width"       type="int"  value="$(arg depth_width)" />
         <param name="camera"         type="str"  value="$(arg camera)" />
