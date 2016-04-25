@@ -14,13 +14,8 @@
 
 <!-- RealSense -->
     <arg name="serial_no"           default="" />
-    <arg name="mode"                default="" />
-    <arg name="ir2"                 default="ir2" />
     <arg name="mode"                default="preset" />
-    <arg name="enable_depth"        default="true" />
-    <arg name="enable_color"        default="true" />
-    <arg name="enable_ir"           default="true" />
-    <arg name="camera"              default="0" />
+    <arg name="ir2"                 default="ir2" />
     <arg name="depth_width"         default="480" />
     <arg name="depth_height"        default="360" />
 
@@ -42,10 +37,9 @@
         <param name="enable_color"      type="bool" value="$(arg rgb_processing)" />
         <param name="enable_pointcloud" type="bool" value="$(arg enable_pointcloud)" />
         <param name="enable_tf"         type="bool" value="$(arg publish_tf)" />
-        <param name="base_frame_id"     type="str"  value="$(arg camera)_link" />
-
         <param name="depth_frame_id"    type="str"  value="$(arg camera)_$(arg depth)_frame" />
-        <param name="color_frame_id"    type="str"  value="$(arg camera)_$(arg rgb)_frame" /> 
+        <param name="color_frame_id"    type="str"  value="$(arg camera)_$(arg rgb)_frame" />
+        <param name="base_frame_id"     type="str"  value="$(arg camera)_link" />
         <param name="depth_optical_frame_id"  type="str"  value="$(arg camera)_$(arg depth)_optical_frame" />
         <param name="color_optical_frame_id"  type="str"  value="$(arg camera)_$(arg rgb)_optical_frame" />
         <param name="ir_frame_id"       type="str"  value="$(arg camera)_$(arg ir)_frame" />
@@ -56,6 +50,7 @@
         <param name="camera"            type="int"  value="$(arg camera)" />
         <param name="depth_height"      type="int"  value="$(arg depth_height)" />
         <param name="depth_width"       type="int"  value="$(arg depth_width)" />
+        <param name="camera"         type="str"  value="$(arg camera)" />
 
         <remap from="camera/depth/image_raw"        to="$(arg depth)/image_raw" />
         <remap from="camera/color/image_raw"        to="$(arg rgb)/image_raw" />

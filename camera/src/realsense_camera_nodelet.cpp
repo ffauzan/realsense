@@ -435,11 +435,9 @@ namespace realsense_camera
 
     getCameraOptions();
     setStaticCameraOptions();
-
     // Start device.
     rs_start_device(rs_device_, &rs_error_);
     checkError();
-
     is_device_started_ = true;
 
     allocateResources();
@@ -476,7 +474,8 @@ namespace realsense_camera
    */
   void RealsenseNodelet::getCameraOptions()
   {
-    for (int i = 0; i < RS_OPTION_COUNT; ++i)
+    if (RS_OPTION_COUNT > 7)
+    for (int i = 0; i < RS_OPTION_COUNT-8; ++i)
     {
       option_str o = { (rs_option) i };
 
@@ -604,9 +603,9 @@ namespace realsense_camera
   void RealsenseNodelet::setStreamOptions()
   {
     pnh_.getParam("serial_no", serial_no_);
-    int camera_id = DEFAULT_CAMERA;
-    pnh_.param("camera", camera_id, DEFAULT_CAMERA);
-    camera_ = (camera_id==0)?"R200":"SR300";
+    pnh_.param("camera", camera_, (std::string) R200);
+    if (camera_ != "SR300")
+        camera_ = "R200";
     pnh_.param("mode", mode_, DEFAULT_MODE);
     pnh_.param("enable_depth", enable_depth_, ENABLE_DEPTH);
     pnh_.param("enable_color", enable_color_, ENABLE_COLOR);
