@@ -83,11 +83,14 @@ public:
   const int COLOR_WIDTH = 640;
   const int DEPTH_FPS = 60;
   const int COLOR_FPS = 60;
+  const int DEFAULT_SR300_PRESET = 0;
   const bool ENABLE_DEPTH = true;
   const bool ENABLE_COLOR = true;
+  const bool ENABLE_RGBD = false;
   const bool ENABLE_PC = true;
   const bool ENABLE_TF = true;
-  const rs_format DEPTH_FORMAT = RS_FORMAT_Z16;
+  const std::string OUTPUT_DEPTH_FORMAT = sensor_msgs::image_encodings::TYPE_16UC1; // ros depth message format
+  const rs_format DEPTH_FORMAT = RS_FORMAT_Z16; // depth format of the underlying realsense driver
   const rs_format COLOR_FORMAT = RS_FORMAT_RGB8;
   const rs_format IR1_FORMAT = RS_FORMAT_Y8;
   const rs_format IR2_FORMAT = RS_FORMAT_Y8;
@@ -99,13 +102,15 @@ public:
   const std::string DEFAULT_IR_FRAME_ID = "camera_infrared_frame";
   const std::string DEFAULT_IR2_FRAME_ID = "camera_infrared2_frame";
   const char *DEPTH_TOPIC = "camera/depth/image_raw";
-  const char *COLOR_TOPIC = "camera/color/image_raw";
+  const char *COLOR_RECT_TOPIC = "camera/color/image_rect";
+  const char *DEPTH_REG_TOPIC = "camera/depth_registered/image_raw";
+  const char *COLOR_TOPIC = "camera/image_raw";
   const char *IR1_TOPIC = "camera/infrared1/image_raw";
   const char *IR2_TOPIC = "camera/infrared2/image_raw";
   const char *PC_TOPIC = "camera/depth/points";
   const char *SETTINGS_SERVICE = "camera/get_settings";
   const char *R200 = "R200";
-  const static int STREAM_COUNT = 4;
+  const static int STREAM_COUNT = 6;
 
 private:
   // Member Variables.
@@ -125,9 +130,14 @@ private:
   int depth_width_;
   int depth_fps_;
   int color_fps_;
+  int rgbd_height_;
+  int rgbd_width_;
+  int rgbd_fps_;
+  int sr300_preset_;
   bool is_device_started_;
   bool enable_color_;
   bool enable_depth_;
+  bool enable_rgbd_;
   bool enable_pointcloud_;
   bool enable_tf_;
   std::string base_frame_id_;
@@ -138,9 +148,11 @@ private:
   std::string ir_frame_id_;
   std::string ir2_frame_id_;
   std::string camera_ = "R200";
-  const uint16_t *image_depth16_;
+  const uint16_t *image_depth16_, *image_depth_reg16_;
 
   cv::Mat image_[STREAM_COUNT];
+  // merge in the alignment so we dont use a ridiculous amount of resources
+  static inline uint32_t sIdx(rs_stream s){ return s == RS_STREAM_DEPTH_ALIGNED_TO_RECTIFIED_COLOR ? (uint32_t) RS_STREAM_POINTS : (uint32_t)s;}
 
   rs_option edge_options_[4] = {
     RS_OPTION_R200_AUTO_EXPOSURE_LEFT_EDGE,
@@ -176,12 +188,14 @@ private:
   // Member Functions.
   void enableColorStream();
   void enableDepthStream();
+  void enableColorRectStream();
+  void enableDepthRegStream();
   void enableInfraredStream();
   void enableInfrared2Stream();
   void checkError();
   void fetchCalibData();
   void prepareStreamCalibData(rs_stream calib_data);
-  void prepareStreamData(rs_stream rs_strm);
+  void prepareStreamData(uint32_t stream_index);
   void publishStreams();
   void publishPointCloud(cv::Mat & image_rgb);
   void publishTransforms();
@@ -195,6 +209,7 @@ private:
   void setStaticCameraOptions();
   bool getCameraOptionValues(realsense_camera::cameraConfiguration::Request & req, realsense_camera::cameraConfiguration::Response & res);
   void configCallback(realsense_camera::camera_paramsConfig &config, uint32_t level);
+  void retrieveDepth(rs_stream stream, const uint16_t * &depth_16);
 
 };
 }
