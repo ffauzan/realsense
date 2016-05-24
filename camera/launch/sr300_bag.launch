@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="rosbag" type="record" name="record"
+        args="-o $(find realsense_camera)/bags/realsense /tf /tf_static /camera/color/camera_info /camera/color/image_rect /camera/depth_registered/image_raw /camera/depth_registered/camera_info /camera/depth/points"/>
+</launch>
