@@ -42,10 +42,10 @@
 #include <camera_info_manager/camera_info_manager.h>
 #include "std_msgs/String.h"
 #include <ros/ros.h>
-#include <pcl-1.7/pcl/conversions.h>
-#include <pcl-1.7/pcl/point_cloud.h>
-#include <pcl-1.7/pcl/point_types.h>
-#include <pcl-1.7/pcl/PCLPointCloud2.h>
+#include <pcl/conversions.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/PCLPointCloud2.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include "std_msgs/Float32MultiArray.h"
 #include <cv_bridge/cv_bridge.h>
@@ -132,6 +132,7 @@ int color_caminfo_height_recv = 0;
 int color_caminfo_width_recv = 0;
 double color_caminfo_rotation_recv[9] = {0};
 double color_caminfo_projection_recv[12] = {0};
+float color_caminfo_D_recv[5] = {0};
 int inf1_caminfo_height_recv = 0;
 int inf1_caminfo_width_recv = 0;
 double inf1_caminfo_rotation_recv[9] = {0};
