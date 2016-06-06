@@ -232,12 +232,6 @@ namespace realsense_camera
       rs_enable_stream_preset (rs_device_, RS_STREAM_INFRARED, RS_PRESET_HIGHEST_FRAMERATE, &rs_error_);
       checkError ();
     }
-    else if (mode_.compare ("close") == 0)
-    {
-      ROS_INFO_STREAM ("RealSense Camera - Enabling Infrared Stream: close mode");
-      rs_enable_stream_preset (rs_device_, RS_STREAM_INFRARED, RS_PRESET_HIGHEST_FRAMERATE, &rs_error_);
-      checkError ();
-    }
     else
     {
       ROS_INFO_STREAM ("RealSense Camera - Enabling Infrared Stream: preset mode");
@@ -259,11 +253,6 @@ namespace realsense_camera
     {
       ROS_INFO_STREAM ("RealSense Camera - Enabling Infrared2 Stream: manual mode");
       rs_enable_stream(rs_device_, RS_STREAM_INFRARED2, depth_width_, depth_height_, IR2_FORMAT, depth_fps_, 0);
-    }
-    else if (mode_.compare ("close") == 0)
-    {
-      ROS_INFO_STREAM ("RealSense Camera - Enabling Infrared2 Stream: close mode");
-      rs_enable_stream_preset (rs_device_, RS_STREAM_INFRARED2, RS_PRESET_HIGHEST_FRAMERATE, 0);
     }
     else if (mode_.compare ("close") == 0)
     {
@@ -481,8 +470,11 @@ namespace realsense_camera
     getCameraOptions();
     setStaticCameraOptions();
     // Start device.
+    // TODO: check to see if start happens near the origin of the timestamp
     rs_start_device(rs_device_, &rs_error_);
     checkError();
+
+    ROS_INFO("depth scale is %f" , rs_get_device_depth_scale(rs_device_, &rs_error_));
 
     is_device_started_ = true;
 
@@ -602,9 +594,9 @@ namespace realsense_camera
       rs_extrinsics z_extrinsic;
       rs_get_device_extrinsics(rs_device_, RS_STREAM_DEPTH, RS_STREAM_COLOR, &z_extrinsic, &rs_error_);
       checkError();
-      camera_info_[stream_index]->P.at(3) =  z_extrinsic.translation[0] / 1000;     // Tx
-      camera_info_[stream_index]->P.at(7) =  z_extrinsic.translation[1] / 1000;     // Ty
-      camera_info_[stream_index]->P.at(11) = z_extrinsic.translation[2] / 1000;    // Tz
+      camera_info_[stream_index]->P.at(3) =  z_extrinsic.translation[0];     // Tx
+      camera_info_[stream_index]->P.at(7) =  z_extrinsic.translation[1];     // Ty
+      camera_info_[stream_index]->P.at(11) = z_extrinsic.translation[2];     // Tz
     }
 
     camera_info_[stream_index]->distortion_model = "plumb_bob";
@@ -898,8 +890,7 @@ namespace realsense_camera
               stream_encoding_[stream_index],
               image_[stream_index]).toImageMsg();
 
-          msg->header.frame_id = frame_id_
-          [stream_index];
+          msg->header.frame_id = frame_id_[stream_index];
           msg->header.stamp = time_stamp_;	// Publish timestamp to synchronize frames.
           msg->width = image_[stream_index].cols;
           msg->height = image_[stream_index].rows;

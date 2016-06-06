@@ -83,13 +83,13 @@ public:
   const int COLOR_WIDTH = 640;
   const int DEPTH_FPS = 60;
   const int COLOR_FPS = 60;
-  const int DEFAULT_SR300_PRESET = 0;
+  const int DEFAULT_SR300_PRESET = 5;
   const bool ENABLE_DEPTH = true;
   const bool ENABLE_COLOR = true;
   const bool ENABLE_RGBD = false;
   const bool ENABLE_PC = true;
   const bool ENABLE_TF = true;
-  const std::string OUTPUT_DEPTH_FORMAT = sensor_msgs::image_encodings::TYPE_16UC1; // ros depth message format
+  const std::string OUTPUT_DEPTH_FORMAT = sensor_msgs::image_encodings::TYPE_32FC1; //sensor_msgs::image_encodings::TYPE_16UC1;// ros depth message format
   const rs_format DEPTH_FORMAT = RS_FORMAT_Z16; // depth format of the underlying realsense driver
   const rs_format COLOR_FORMAT = RS_FORMAT_RGB8;
   const rs_format IR1_FORMAT = RS_FORMAT_Y8;
