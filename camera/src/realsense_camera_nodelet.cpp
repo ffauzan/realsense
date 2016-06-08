@@ -1011,6 +1011,11 @@ namespace realsense_camera
               *iter_r = 96;
               *iter_g = 157;
               *iter_b = 198;
+              
+              // LJL: these points are useless, make sure they go unused
+              depth_point[0] = 0;
+              depth_point[1] = 0;
+              depth_point[2] = 0;
             }
             else
             {
